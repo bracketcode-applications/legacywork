@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fedora 10 Desktop (HTML Clone)</title>
+  <style>
+    :root{
+      --panel-bg1:#3b3b3b;
+      --panel-bg2:#2b2b2b;
+      --panel-border:#151515;
+      --menu-bg:#f4f4f4;
+      --menu-border:#b6b6b6;
+      --menu-hover:#3b6ea5;
+      --menu-hover-text:#fff;
+      --text:#111;
+      --shadow: rgba(0,0,0,.35);
+      --win-title1:#efefef;
+      --win-title2:#d9d9d9;
+      --win-border:#9a9a9a;
+      --desktop-icon-text:#ffffff;
+      --desktop-icon-shadow:#00000099;
+      --accent:#2d6db3;
+      --danger:#b33a2d;
+    }
+
+    /* ---- Base / Desktop ---- */
+    html, body { height:100%; margin:0; font-family: "DejaVu Sans", "Liberation Sans", Arial, sans-serif; }
+    body { overflow:hidden; }
+
+    .desktop {
+      position:relative;
+      height:100%;
+      /* Fedora 10-ish blue gradient wallpaper */
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.25), transparent 55%),
+        radial-gradient(900px 700px at 80% 35%, rgba(255,255,255,.18), transparent 60%),
+        linear-gradient(135deg, #0b2e59 0%, #1e5aa5 45%, #0b2e59 100%);
+      user-select:none;
+    }
+
+    /* ---- Top Panel ---- */
+    .top-panel{
+      position:absolute; left:0; right:0; top:0;
+      height:28px;
+      background: linear-gradient(var(--panel-bg1), var(--panel-bg2));
+      border-bottom:1px solid var(--panel-border);
+      box-shadow: 0 1px 0 rgba(255,255,255,.06) inset;
+      display:flex;
+      align-items:center;
+      padding:0 8px;
+      color:#eee;
+      font-size:13px;
+      z-index: 1000;
+    }
+
+    .panel-left, .panel-right{
+      display:flex; align-items:center; gap:6px;
+    }
+    .panel-left{ flex: 1; }
+    .panel-center{ flex: 1; display:flex; justify-content:center; }
+    .panel-right{ flex: 1; justify-content:flex-end; }
+
+    .menu-button{
+      position:relative;
+      padding:4px 10px;
+      border:1px solid transparent;
+      border-radius:2px;
+      color:#eee;
+      cursor:pointer;
+      line-height: 1;
+    }
+    .menu-button:hover, .menu-button[aria-expanded="true"]{
+      border-color:#101010;
+      background: linear-gradient(#4a4a4a, #2f2f2f);
+      box-shadow: 0 1px 0 rgba(255,255,255,.08) inset;
+    }
+
+    .panel-sep{
+      width:1px; height:18px;
+      background:#111;
+      box-shadow: 1px 0 0 rgba(255,255,255,.08);
+      margin:0 4px;
+    }
+
+    .clock{
+      padding:3px 8px;
+      border:1px solid transparent;
+      border-radius:2px;
+      font-variant-numeric: tabular-nums;
+      opacity:.95;
+    }
+
+    /* ---- Menus ---- */
+    .menu{
+      position:absolute;
+      top:26px; /* just under panel */
+      min-width: 260px;
+      background: var(--menu-bg);
+      border:1px solid var(--menu-border);
+      box-shadow: 0 8px 18px var(--shadow);
+      border-radius:3px;
+      padding:6px 0;
+      display:none;
+      color:var(--text);
+      z-index: 2000;
+    }
+    .menu.open{ display:block; }
+
+    .menu .menu-title{
+      padding:6px 12px 8px 12px;
+      font-size:12px;
+      color:#444;
+      border-bottom:1px solid #ddd;
+      margin-bottom:6px;
+    }
+
+    .menu-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 10px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .menu-item:hover{
+      background: var(--menu-hover);
+      color: var(--menu-hover-text);
+    }
+    .menu-item .icon{
+      width:18px; height:18px;
+      display:grid; place-items:center;
+      border-radius:3px;
+      background: #dcdcdc;
+      border: 1px solid #c7c7c7;
+      font-size:12px;
+      color:#222;
+      flex: 0 0 auto;
+    }
+    .menu-item:hover .icon{
+      background: rgba(255,255,255,.22);
+      border-color: rgba(255,255,255,.35);
+      color:#fff;
+    }
+    .menu-sep{
+      height:1px; background:#d7d7d7;
+      margin:6px 0;
+    }
+    .menu-right{
+      margin-left:auto;
+      opacity:.7;
+      font-size:12px;
+    }
+
+    /* ---- Desktop Icons ---- */
+    .icons{
+      position:absolute;
+      top: 42px; left: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      z-index: 10;
+    }
+    .desktop-icon{
+      width:84px;
+      text-align:center;
+      cursor:pointer;
+    }
+    .desktop-icon .glyph{
+      width:48px; height:48px;
+      margin:0 auto 4px auto;
+      border-radius:8px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.25);
+      box-shadow: 0 8px 14px rgba(0,0,0,.25);
+      display:grid; place-items:center;
+      color:#fff;
+      font-size:22px;
+    }
+    .desktop-icon .label{
+      color: var(--desktop-icon-text);
+      text-shadow: 0 1px 2px var(--desktop-icon-shadow);
+      font-size:12px;
+      padding:2px 4px;
+      border-radius:3px;
+      display:inline-block;
+    }
+    .desktop-icon:active .glyph{ transform: translateY(1px); }
+
+    /* ---- “Window” ---- */
+    .window{
+      position:absolute;
+      width: 560px;
+      height: 360px;
+      left: 180px;
+      top: 110px;
+      background:#fff;
+      border:1px solid var(--win-border);
+      border-radius:5px;
+      box-shadow: 0 18px 28px var(--shadow);
+      display:none;
+      overflow:hidden;
+      z-index: 900;
+    }
+    .window.open{ display:block; }
+
+    .window .titlebar{
+      height:28px;
+      background: linear-gradient(var(--win-title1), var(--win-title2));
+      border-bottom:1px solid #c8c8c8;
+      display:flex;
+      align-items:center;
+      padding:0 8px;
+      cursor:move;
+      user-select:none;
+    }
+    .window .titlebar .title{
+      font-size:13px;
+      color:#222;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .window .titlebar .controls{
+      margin-left:auto;
+      display:flex;
+      gap:6px;
+    }
+    .win-btn{
+      width:16px; height:16px;
+      border:1px solid #a5a5a5;
+      border-radius:3px;
+      background:#efefef;
+      display:grid; place-items:center;
+      font-size:11px;
+      color:#333;
+      cursor:pointer;
+    }
+    .win-btn:hover{ background:#fff; }
+    .win-btn.close:hover{ background:#ffe7e7; border-color:#d19999; color:#7a0b0b; }
+
+    .window .content{
+      display:flex;
+      height: calc(100% - 28px);
+    }
+    .sidebar{
+      width: 170px;
+      background:#f6f6f6;
+      border-right:1px solid #dedede;
+      padding:10px;
+      font-size:12px;
+    }
+    .side-header{
+      font-weight:700;
+      color:#444;
+      margin-bottom:8px;
+    }
+    .side-link{
+      padding:6px 8px;
+      border-radius:4px;
+      cursor:pointer;
+      margin-bottom:4px;
+      color:#222;
+    }
+    .side-link:hover{
+      background:#e9eef7;
+      color:#123b6d;
+    }
+
+    .main{
+      flex:1;
+      padding:10px;
+      overflow:auto;
+    }
+    .crumbs{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      font-size:12px;
+      color:#444;
+      margin-bottom:10px;
+    }
+    .crumb{
+      padding:2px 6px;
+      background:#f1f1f1;
+      border:1px solid #e1e1e1;
+      border-radius:4px;
+    }
+    .file-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap:10px;
+    }
+    .file{
+      border:1px solid #e2e2e2;
+      border-radius:6px;
+      padding:10px;
+      background:#fff;
+      cursor:pointer;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .file:hover{
+      border-color:#bcd1ef;
+      box-shadow: 0 0 0 3px rgba(45,109,179,.12);
+    }
+    .file .ficon{
+      width:28px; height:28px;
+      border-radius:6px;
+      background:#eef3fb;
+      border:1px solid #d6e3f7;
+      display:grid; place-items:center;
+      color:#1b4f8f;
+      font-weight:700;
+      flex:0 0 auto;
+    }
+    .file .fname{
+      font-size:13px;
+      color:#222;
+      font-weight:600;
+      line-height:1.2;
+    }
+    .file .fmeta{
+      font-size:11px;
+      color:#666;
+      margin-top:2px;
+    }
+
+    /* ---- Footer hint ---- */
+    .hint{
+      position:absolute;
+      left: 12px;
+      bottom: 10px;
+      color: rgba(255,255,255,.85);
+      font-size:12px;
+      text-shadow: 0 1px 2px rgba(0,0,0,.55);
+      z-index: 5;
+    }
+
+    /* Accessibility focus */
+    .menu-button:focus-visible, .menu-item:focus-visible, .desktop-icon:focus-visible, .side-link:focus-visible, .win-btn:focus-visible, .file:focus-visible{
+      outline: 2px solid #9dc2ff;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="desktop" id="desktop">
+    <!-- Top panel -->
+    <div class="top-panel" id="panel">
+      <div class="panel-left">
+        <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-apps">
+          Applications
+        </div>
+        <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-places">
+          Places
+        </div>
+        <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-system">
+          System
+        </div>
+      </div>
+
+      <div class="panel-center">
+        <div style="opacity:.85;font-size:12px;">Fedora 10 (GNOME 2 style) — HTML Desktop</div>
+      </div>
+
+      <div class="panel-right">
+        <div class="panel-sep"></div>
+        <div style="font-size:12px; opacity:.9;">🔊</div>
+        <div style="font-size:12px; opacity:.9;">📶</div>
+        <div style="font-size:12px; opacity:.9;">🔋</div>
+        <div class="clock" id="clock">--:--</div>
+      </div>
+    </div>
+
+    <!-- Menus -->
+    <div class="menu" id="menu-apps" role="menu" aria-label="Applications menu">
+      <div class="menu-title">Applications</div>
+      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Terminal">
+        <span class="icon">⌘</span> Terminal <span class="menu-right">Ctrl+Alt+T</span>
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Text Editor">
+        <span class="icon">📝</span> Text Editor
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Web Browser">
+        <span class="icon">🌐</span> Web Browser
+      </div>
+      <div class="menu-sep"></div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
+        <span class="icon">⬇</span> Downloads
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
+        <span class="icon">📄</span> Documents
+      </div>
+    </div>
+
+    <div class="menu" id="menu-places" role="menu" aria-label="Places menu">
+      <div class="menu-title">Places (folder links)</div>
+
+      <!-- Folder links (customize these freely) -->
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert">
+        <span class="icon">🏠</span> Home Folder
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Desktop">
+        <span class="icon">🖥</span> Desktop
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
+        <span class="icon">📄</span> Documents
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
+        <span class="icon">⬇</span> Downloads
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Pictures">
+        <span class="icon">🖼</span> Pictures
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Music">
+        <span class="icon">🎵</span> Music
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Videos">
+        <span class="icon">🎬</span> Videos
+      </div>
+
+      <div class="menu-sep"></div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/media">
+        <span class="icon">💽</span> Computer
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/network">
+        <span class="icon">🖧</span> Network
+      </div>
+    </div>
+
+    <div class="menu" id="menu-system" role="menu" aria-label="System menu">
+      <div class="menu-title">System</div>
+      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Preferences">
+        <span class="icon">⚙</span> Preferences
+      </div>
+      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Administration">
+        <span class="icon">🛡</span> Administration
+      </div>
+      <div class="menu-sep"></div>
+      <div class="menu-item" tabindex="0" data-action="about">
+        <span class="icon">ⓘ</span> About Fedora 10 Clone
+      </div>
+      <div class="menu-item" tabindex="0" data-action="logout">
+        <span class="icon">⏻</span> Log Out…
+      </div>
+    </div>
+
+    <!-- Desktop icons -->
+    <div class="icons">
+      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert">
+        <div class="glyph">🏠</div>
+        <div class="label">Home</div>
+      </div>
+      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
+        <div class="glyph">📄</div>
+        <div class="label">Documents</div>
+      </div>
+      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
+        <div class="glyph">⬇</div>
+        <div class="label">Downloads</div>
+      </div>
+      <div class="desktop-icon" tabindex="0" data-action="open-app" data-app="Terminal">
+        <div class="glyph">⌘</div>
+        <div class="label">Terminal</div>
+      </div>
+    </div>
+
+    <div class="hint">
+      Tip: Click <b>Places</b> → folder links. Drag the window by its title bar.
+    </div>
+
+    <!-- “File Browser” window -->
+    <div class="window" id="window">
+      <div class="titlebar" id="titlebar">
+        <div class="title" id="win-title">📁 File Browser</div>
+        <div class="controls">
+          <div class="win-btn" title="Minimize (fake)" data-action="minimize">—</div>
+          <div class="win-btn" title="Maximize (fake)" data-action="maximize">▢</div>
+          <div class="win-btn close" title="Close" data-action="close">✕</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="sidebar">
+          <div class="side-header">Places</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert">Home</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Desktop">Desktop</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">Documents</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">Downloads</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Pictures">Pictures</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Music">Music</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Videos">Videos</div>
+        </div>
+
+        <div class="main">
+          <div class="crumbs" id="crumbs"></div>
+          <div class="file-grid" id="file-grid"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ---------------------------
+    // Fake filesystem (edit freely)
+    // ---------------------------
+    const FS = {
+      "/": ["home", "media", "network", "var", "etc"],
+      "/home": ["albert"],
+      "/home/albert": ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Projects", "notes.txt"],
+      "/home/albert/Desktop": ["Readme.desktop", "Trash"],
+      "/home/albert/Documents": ["Resume.odt", "Budget.ods", "Specs", "MeetingNotes.txt"],
+      "/home/albert/Documents/Specs": ["infra.md", "diagram.png", "todo.txt"],
+      "/home/albert/Downloads": ["fedora10.iso", "wallpaper.jpg", "package.rpm"],
+      "/home/albert/Pictures": ["vacation", "screenshot.png", "avatar.jpg"],
+      "/home/albert/Pictures/vacation": ["beach.jpg", "mountain.jpg"],
+      "/home/albert/Music": ["album", "mix.ogg"],
+      "/home/albert/Music/album": ["01-intro.ogg", "02-track.ogg"],
+      "/home/albert/Videos": ["demo.mp4", "conference.ogv"],
+      "/home/albert/Projects": ["website", "ops"],
+      "/home/albert/Projects/website": ["index.html", "styles.css", "README.md"],
+      "/home/albert/Projects/ops": ["runbook.md", "alerts.yml"],
+      "/media": ["CDROM", "USB_DISK"],
+      "/network": ["Workgroup", "Servers"],
+      "/var": ["log", "tmp"],
+      "/etc": ["hosts", "fstab"]
+    };
+
+    // ---------------------------
+    // Clock
+    // ---------------------------
+    const clockEl = document.getElementById("clock");
+    function updateClock(){
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      clockEl.textContent = `${hh}:${mm}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ---------------------------
+    // Menus
+    // ---------------------------
+    const btnApps = document.getElementById("btn-apps");
+    const btnPlaces = document.getElementById("btn-places");
+    const btnSystem = document.getElementById("btn-system");
+
+    const menuApps = document.getElementById("menu-apps");
+    const menuPlaces = document.getElementById("menu-places");
+    const menuSystem = document.getElementById("menu-system");
+
+    function closeAllMenus(){
+      [menuApps, menuPlaces, menuSystem].forEach(m => m.classList.remove("open"));
+      [btnApps, btnPlaces, btnSystem].forEach(b => b.setAttribute("aria-expanded", "false"));
+    }
+
+    function toggleMenu(btn, menu){
+      const open = menu.classList.contains("open");
+      closeAllMenus();
+      if(!open){
+        menu.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+        // Position under button
+        const rect = btn.getBoundingClientRect();
+        menu.style.left = rect.left + "px";
+        menu.style.top = (rect.bottom - 2) + "px";
+      }
+    }
+
+    btnApps.addEventListener("click", () => toggleMenu(btnApps, menuApps));
+    btnPlaces.addEventListener("click", () => toggleMenu(btnPlaces, menuPlaces));
+    btnSystem.addEventListener("click", () => toggleMenu(btnSystem, menuSystem));
+
+    // Keyboard open with Enter/Space
+    [btnApps, btnPlaces, btnSystem].forEach((btn) => {
+      btn.addEventListener("keydown", (e) => {
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          btn.click();
+        }
+        if(e.key === "Escape"){
+          closeAllMenus();
+        }
+      });
+    });
+
+    // Click outside closes menus
+    document.addEventListener("mousedown", (e) => {
+      const withinMenu = e.target.closest(".menu") || e.target.closest(".menu-button");
+      if(!withinMenu) closeAllMenus();
+    });
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape") closeAllMenus();
+    });
+
+    // ---------------------------
+    // Window / File browser
+    // ---------------------------
+    const win = document.getElementById("window");
+    const winTitle = document.getElementById("win-title");
+    const crumbsEl = document.getElementById("crumbs");
+    const gridEl = document.getElementById("file-grid");
+
+    let currentPath = "/home/albert";
+    let zTop = 1000;
+
+    function bringToFront(){
+      zTop += 1;
+      win.style.zIndex = zTop;
+    }
+
+    function openWindow(path){
+      bringToFront();
+      win.classList.add("open");
+      renderFolder(path);
+    }
+
+    function closeWindow(){
+      win.classList.remove("open");
+    }
+
+    function renderFolder(path){
+      currentPath = normalizePath(path);
+      winTitle.textContent = `📁 File Browser — ${currentPath}`;
+      // crumbs
+      crumbsEl.innerHTML = "";
+      const parts = currentPath.split("/").filter(Boolean);
+      let accum = "";
+      const rootCrumb = makeCrumb("/", "/");
+      crumbsEl.appendChild(rootCrumb);
+
+      parts.forEach((p) => {
+        accum += "/" + p;
+        const c = makeCrumb(p, accum);
+        crumbsEl.appendChild(document.createTextNode("›"));
+        crumbsEl.appendChild(c);
+      });
+
+      // files
+      const items = FS[currentPath] || [];
+      gridEl.innerHTML = "";
+      if(items.length === 0){
+        const empty = document.createElement("div");
+        empty.style.color = "#666";
+        empty.style.fontSize = "13px";
+        empty.textContent = "This folder is empty.";
+        gridEl.appendChild(empty);
+        return;
+      }
+
+      items.forEach((name) => {
+        const full = currentPath === "/" ? `/${name}` : `${currentPath}/${name}`;
+        const isDir = FS.hasOwnProperty(full);
+        const el = document.createElement("div");
+        el.className = "file";
+        el.tabIndex = 0;
+        el.dataset.path = full;
+        el.dataset.isdir = isDir ? "1" : "0";
+
+        el.innerHTML = `
+          <div class="ficon">${isDir ? "📁" : "📄"}</div>
+          <div>
+            <div class="fname">${escapeHtml(name)}</div>
+            <div class="fmeta">${isDir ? "Folder" : "File"} • ${fakeSize(name, isDir)}</div>
+          </div>
+        `;
+
+        function activate(){
+          if(isDir) renderFolder(full);
+          else alert(`(Demo) Opening file: ${full}`);
+        }
+
+        el.addEventListener("dblclick", activate);
+        el.addEventListener("keydown", (e)=> {
+          if(e.key==="Enter"){ activate(); }
+        });
+
+        gridEl.appendChild(el);
+      });
+    }
+
+    function makeCrumb(label, path){
+      const c = document.createElement("span");
+      c.className = "crumb";
+      c.tabIndex = 0;
+      c.textContent = label;
+      c.addEventListener("click", ()=> renderFolder(path));
+      c.addEventListener("keydown", (e)=>{
+        if(e.key==="Enter") renderFolder(path);
+      });
+      return c;
+    }
+
+    function normalizePath(p){
+      if(!p) return "/";
+      // collapse multiple slashes
+      p = p.replace(/\/+/g, "/");
+      // remove trailing slash except root
+      if(p.length > 1 && p.endsWith("/")) p = p.slice(0,-1);
+      // ensure leading slash
+      if(!p.startsWith("/")) p = "/" + p;
+      return p;
+    }
+
+    function fakeSize(name, isDir){
+      if(isDir) return `${(2 + (name.length % 9))} items`;
+      const kb = 4 + (name.length * 7);
+      return kb > 1024 ? `${(kb/1024).toFixed(1)} MB` : `${kb} KB`;
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // Window buttons
+    win.addEventListener("click", (e)=>{
+      const btn = e.target.closest(".win-btn");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      if(action === "close") closeWindow();
+      if(action === "minimize") closeWindow(); // fake minimize
+      if(action === "maximize"){
+        bringToFront();
+        const isMax = win.dataset.max === "1";
+        if(!isMax){
+          win.dataset.max = "1";
+          win.dataset.prev = JSON.stringify({
+            left: win.style.left,
+            top: win.style.top,
+            width: win.style.width,
+            height: win.style.height
+          });
+          win.style.left = "8px";
+          win.style.top = "36px";
+          win.style.width = "calc(100% - 16px)";
+          win.style.height = "calc(100% - 48px)";
+        } else {
+          win.dataset.max = "0";
+          try{
+            const prev = JSON.parse(win.dataset.prev || "{}");
+            win.style.left = prev.left || "180px";
+            win.style.top = prev.top || "110px";
+            win.style.width = prev.width || "560px";
+            win.style.height = prev.height || "360px";
+          }catch(_){}
+        }
+      }
+    });
+
+    // Bring to front when clicked
+    win.addEventListener("mousedown", bringToFront);
+
+    // Dragging
+    const titlebar = document.getElementById("titlebar");
+    let drag = null;
+    titlebar.addEventListener("mousedown", (e)=>{
+      // don't drag when clicking buttons
+      if(e.target.closest(".controls")) return;
+      bringToFront();
+      if(win.dataset.max === "1") return; // don't drag when maximized
+      const rect = win.getBoundingClientRect();
+      drag = {
+        startX: e.clientX,
+        startY: e.clientY,
+        left: rect.left,
+        top: rect.top
+      };
+    });
+    window.addEventListener("mousemove", (e)=>{
+      if(!drag) return;
+      const dx = e.clientX - drag.startX;
+      const dy = e.clientY - drag.startY;
+      win.style.left = Math.max(8, drag.left + dx) + "px";
+      win.style.top = Math.max(36, drag.top + dy) + "px";
+    });
+    window.addEventListener("mouseup", ()=> drag = null);
+
+    // ---------------------------
+    // Actions from menus & icons
+    // ---------------------------
+    function handleAction(target){
+      const action = target.dataset.action;
+      if(!action) return;
+
+      closeAllMenus();
+
+      if(action === "open-folder"){
+        openWindow(target.dataset.path || "/home/albert");
+      }
+      if(action === "open-app"){
+        const app = target.dataset.app || "App";
+        openWindow("/home/albert");
+        alert(`(Demo) Launching: ${app}`);
+      }
+      if(action === "about"){
+        openWindow("/home/albert");
+        alert("Fedora 10 / GNOME 2 inspired desktop clone.\n\nMenus + folder links are fully HTML/CSS/JS.");
+      }
+      if(action === "logout"){
+        alert("(Demo) Log out…");
+      }
+    }
+
+    document.addEventListener("click", (e)=>{
+      const item = e.target.closest("[data-action]");
+      if(item) handleAction(item);
+    });
+
+    document.addEventListener("keydown", (e)=>{
+      // Allow Enter on any element with data-action and tabindex
+      if(e.key !== "Enter") return;
+      const el = document.activeElement;
+      if(el && el.dataset && el.dataset.action){
+        handleAction(el);
+      }
+    });
+
+    // Open Home by default on load (optional)
+    // openWindow("/home/albert");
+  </script>
+</body>
+</html>
