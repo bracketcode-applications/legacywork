@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fedora 10 Desktop (HTML Clone)</title>
+  <title>LegacyWork</title>
   <style>
     :root{
       --panel-bg1:#3b3b3b;
@@ -123,6 +123,10 @@
       cursor:pointer;
       white-space:nowrap;
     }
+    a.menu-item{
+      color: inherit;
+      text-decoration: none;
+    }
     .menu-item:hover{
       background: var(--menu-hover);
       color: var(--menu-hover-text);
@@ -176,6 +180,9 @@
       display:grid; place-items:center;
       color:#fff;
       font-size:22px;
+    }
+    .desktop-icon .glyph svg{
+      width:28px; height:28px;
     }
     .desktop-icon .label{
       color: var(--desktop-icon-text);
@@ -341,6 +348,15 @@
       text-shadow: 0 1px 2px rgba(0,0,0,.55);
       z-index: 5;
     }
+    .credit{
+      position:absolute;
+      right: 12px;
+      bottom: 10px;
+      color: #fff;
+      font-size:11px;
+      text-shadow: 0 1px 2px rgba(0,0,0,.55);
+      z-index: 5;
+    }
 
     /* Accessibility focus */
     .menu-button:focus-visible, .menu-item:focus-visible, .desktop-icon:focus-visible, .side-link:focus-visible, .win-btn:focus-visible, .file:focus-visible{
@@ -357,16 +373,10 @@
         <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-apps">
           Applications
         </div>
-        <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-places">
-          Places
-        </div>
-        <div class="menu-button" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" id="btn-system">
-          System
-        </div>
       </div>
 
       <div class="panel-center">
-        <div style="opacity:.85;font-size:12px;">Fedora 10 (GNOME 2 style) — HTML Desktop</div>
+        <div style="opacity:.85;font-size:12px;">CECSLab (LegacyWork)</div>
       </div>
 
       <div class="panel-right">
@@ -381,99 +391,41 @@
     <!-- Menus -->
     <div class="menu" id="menu-apps" role="menu" aria-label="Applications menu">
       <div class="menu-title">Applications</div>
-      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Terminal">
-        <span class="icon">⌘</span> Terminal <span class="menu-right">Ctrl+Alt+T</span>
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Text Editor">
-        <span class="icon">📝</span> Text Editor
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Web Browser">
-        <span class="icon">🌐</span> Web Browser
-      </div>
+      <a class="menu-item" href="#" tabindex="0">
+        <span class="icon">🌐</span> Arroyo Verdugo
+      </a>
+      <a class="menu-item" href="#" tabindex="0">
+        <span class="icon">🌐</span> Raider Rover
+      </a>
       <div class="menu-sep"></div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
-        <span class="icon">⬇</span> Downloads
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
+      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/user/Documents">
         <span class="icon">📄</span> Documents
-      </div>
-    </div>
-
-    <div class="menu" id="menu-places" role="menu" aria-label="Places menu">
-      <div class="menu-title">Places (folder links)</div>
-
-      <!-- Folder links (customize these freely) -->
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert">
-        <span class="icon">🏠</span> Home Folder
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Desktop">
-        <span class="icon">🖥</span> Desktop
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
-        <span class="icon">📄</span> Documents
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
-        <span class="icon">⬇</span> Downloads
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Pictures">
-        <span class="icon">🖼</span> Pictures
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Music">
-        <span class="icon">🎵</span> Music
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/home/albert/Videos">
-        <span class="icon">🎬</span> Videos
-      </div>
-
-      <div class="menu-sep"></div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/media">
-        <span class="icon">💽</span> Computer
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-folder" data-path="/network">
-        <span class="icon">🖧</span> Network
-      </div>
-    </div>
-
-    <div class="menu" id="menu-system" role="menu" aria-label="System menu">
-      <div class="menu-title">System</div>
-      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Preferences">
-        <span class="icon">⚙</span> Preferences
-      </div>
-      <div class="menu-item" tabindex="0" data-action="open-app" data-app="Administration">
-        <span class="icon">🛡</span> Administration
-      </div>
-      <div class="menu-sep"></div>
-      <div class="menu-item" tabindex="0" data-action="about">
-        <span class="icon">ⓘ</span> About Fedora 10 Clone
-      </div>
-      <div class="menu-item" tabindex="0" data-action="logout">
-        <span class="icon">⏻</span> Log Out…
       </div>
     </div>
 
     <!-- Desktop icons -->
     <div class="icons">
-      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert">
+      <div class="desktop-icon" tabindex="0" data-action="reload">
         <div class="glyph">🏠</div>
         <div class="label">Home</div>
       </div>
-      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">
-        <div class="glyph">📄</div>
-        <div class="label">Documents</div>
-      </div>
-      <div class="desktop-icon" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">
-        <div class="glyph">⬇</div>
-        <div class="label">Downloads</div>
-      </div>
-      <div class="desktop-icon" tabindex="0" data-action="open-app" data-app="Terminal">
-        <div class="glyph">⌘</div>
-        <div class="label">Terminal</div>
+      <div class="desktop-icon" tabindex="0" data-action="open-url" data-url="https://github.com/bracketcode-applications">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="6" y1="3" x2="6" y2="15"></line>
+            <circle cx="18" cy="6" r="3"></circle>
+            <circle cx="6" cy="18" r="3"></circle>
+            <path d="M18 9a9 9 0 0 1-9 9"></path>
+          </svg>
+        </div>
+        <div class="label">GitHub</div>
       </div>
     </div>
 
     <div class="hint">
-      Tip: Click <b>Places</b> → folder links. Drag the window by its title bar.
+      Tip: Click <b>Home</b> to reload. Drag the window by its title bar.
     </div>
+    <div class="credit">2026 A BracketCode Project</div>
 
     <!-- “File Browser” window -->
     <div class="window" id="window">
@@ -489,13 +441,13 @@
       <div class="content">
         <div class="sidebar">
           <div class="side-header">Places</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert">Home</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Desktop">Desktop</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Documents">Documents</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Downloads">Downloads</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Pictures">Pictures</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Music">Music</div>
-          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/albert/Videos">Videos</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user">Home</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Desktop">Desktop</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Documents">Documents</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Downloads">Downloads</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Pictures">Pictures</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Music">Music</div>
+          <div class="side-link" tabindex="0" data-action="open-folder" data-path="/home/user/Videos">Videos</div>
         </div>
 
         <div class="main">
@@ -513,20 +465,20 @@
     // ---------------------------
     const FS = {
       "/": ["home", "media", "network", "var", "etc"],
-      "/home": ["albert"],
-      "/home/albert": ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Projects", "notes.txt"],
-      "/home/albert/Desktop": ["Readme.desktop", "Trash"],
-      "/home/albert/Documents": ["Resume.odt", "Budget.ods", "Specs", "MeetingNotes.txt"],
-      "/home/albert/Documents/Specs": ["infra.md", "diagram.png", "todo.txt"],
-      "/home/albert/Downloads": ["fedora10.iso", "wallpaper.jpg", "package.rpm"],
-      "/home/albert/Pictures": ["vacation", "screenshot.png", "avatar.jpg"],
-      "/home/albert/Pictures/vacation": ["beach.jpg", "mountain.jpg"],
-      "/home/albert/Music": ["album", "mix.ogg"],
-      "/home/albert/Music/album": ["01-intro.ogg", "02-track.ogg"],
-      "/home/albert/Videos": ["demo.mp4", "conference.ogv"],
-      "/home/albert/Projects": ["website", "ops"],
-      "/home/albert/Projects/website": ["index.html", "styles.css", "README.md"],
-      "/home/albert/Projects/ops": ["runbook.md", "alerts.yml"],
+      "/home": ["user"],
+      "/home/user": ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Projects", "notes.txt"],
+      "/home/user/Desktop": ["Readme.desktop", "Trash"],
+      "/home/user/Documents": ["Resume.odt", "Budget.ods", "Specs", "MeetingNotes.txt"],
+      "/home/user/Documents/Specs": ["infra.md", "diagram.png", "todo.txt"],
+      "/home/user/Downloads": ["fedora10.iso", "wallpaper.jpg", "package.rpm"],
+      "/home/user/Pictures": ["vacation", "screenshot.png", "avatar.jpg"],
+      "/home/user/Pictures/vacation": ["beach.jpg", "mountain.jpg"],
+      "/home/user/Music": ["album", "mix.ogg"],
+      "/home/user/Music/album": ["01-intro.ogg", "02-track.ogg"],
+      "/home/user/Videos": ["demo.mp4", "conference.ogv"],
+      "/home/user/Projects": ["website", "ops"],
+      "/home/user/Projects/website": ["index.html", "styles.css", "README.md"],
+      "/home/user/Projects/ops": ["runbook.md", "alerts.yml"],
       "/media": ["CDROM", "USB_DISK"],
       "/network": ["Workgroup", "Servers"],
       "/var": ["log", "tmp"],
@@ -550,16 +502,11 @@
     // Menus
     // ---------------------------
     const btnApps = document.getElementById("btn-apps");
-    const btnPlaces = document.getElementById("btn-places");
-    const btnSystem = document.getElementById("btn-system");
-
     const menuApps = document.getElementById("menu-apps");
-    const menuPlaces = document.getElementById("menu-places");
-    const menuSystem = document.getElementById("menu-system");
 
     function closeAllMenus(){
-      [menuApps, menuPlaces, menuSystem].forEach(m => m.classList.remove("open"));
-      [btnApps, btnPlaces, btnSystem].forEach(b => b.setAttribute("aria-expanded", "false"));
+      menuApps.classList.remove("open");
+      btnApps.setAttribute("aria-expanded", "false");
     }
 
     function toggleMenu(btn, menu){
@@ -576,20 +523,20 @@
     }
 
     btnApps.addEventListener("click", () => toggleMenu(btnApps, menuApps));
-    btnPlaces.addEventListener("click", () => toggleMenu(btnPlaces, menuPlaces));
-    btnSystem.addEventListener("click", () => toggleMenu(btnSystem, menuSystem));
+
+    menuApps.addEventListener("click", (e) => {
+      if(e.target.closest("a.menu-item")) closeAllMenus();
+    });
 
     // Keyboard open with Enter/Space
-    [btnApps, btnPlaces, btnSystem].forEach((btn) => {
-      btn.addEventListener("keydown", (e) => {
-        if(e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          btn.click();
-        }
-        if(e.key === "Escape"){
-          closeAllMenus();
-        }
-      });
+    btnApps.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        btnApps.click();
+      }
+      if(e.key === "Escape"){
+        closeAllMenus();
+      }
     });
 
     // Click outside closes menus
@@ -609,7 +556,7 @@
     const crumbsEl = document.getElementById("crumbs");
     const gridEl = document.getElementById("file-grid");
 
-    let currentPath = "/home/albert";
+    let currentPath = "/home/user";
     let zTop = 1000;
 
     function bringToFront(){
@@ -797,16 +744,25 @@
 
       closeAllMenus();
 
+      if(action === "reload"){
+        window.location.href = "index.html";
+        return;
+      }
+      if(action === "open-url"){
+        const url = target.dataset.url;
+        if(url) window.open(url, "_blank", "noopener,noreferrer");
+        return;
+      }
       if(action === "open-folder"){
-        openWindow(target.dataset.path || "/home/albert");
+        openWindow(target.dataset.path || "/home/user");
       }
       if(action === "open-app"){
         const app = target.dataset.app || "App";
-        openWindow("/home/albert");
+        openWindow("/home/user");
         alert(`(Demo) Launching: ${app}`);
       }
       if(action === "about"){
-        openWindow("/home/albert");
+        openWindow("/home/user");
         alert("Fedora 10 / GNOME 2 inspired desktop clone.\n\nMenus + folder links are fully HTML/CSS/JS.");
       }
       if(action === "logout"){
@@ -829,7 +785,7 @@
     });
 
     // Open Home by default on load (optional)
-    // openWindow("/home/albert");
+    // openWindow("/home/user");
   </script>
 </body>
 </html>
